@@ -1,2 +1,3 @@
 # SPARCS-Simulator
-Model In the Loop
+- MIL (Model In the Loop)
+- System Composer
