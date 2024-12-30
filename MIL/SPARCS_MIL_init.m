@@ -10,16 +10,16 @@ epoch.Second = 45;
 epoch.DecimalYear = decyear(epoch.Year, epoch.Month, epoch.Day, epoch.Hour, epoch.Minute, epoch.Second);
 %% Orbital Elements
 Semi_major_axis = 6921000;                    % (m)
-Inclination = 55;                             % (deg)
-RAAN = 45;                                    % (deg)
-Argument_of_latitude = 45;                    % (deg)
+Inclination = 55;                             % (deg) 55
+RAAN = 45;                                    % (deg) 45
+Argument_of_latitude = 45;                    % (deg) 45
 simulator.EarthGConst = 3.986004418e14;       % Earth's standard gravitational parameter in m^3/s^2
 %% Attitude Kinematics & Dynamics
 % Initial Euler Angles (rad)
 rng(1);
 EulerUnit = randn(3,1); 
 EulerUnit = EulerUnit ./ norm(EulerUnit);
-EulerNorm = 90;                               %deg
+EulerNorm = 100;                               %deg
 Euler_Angle = deg2rad(EulerNorm).*EulerUnit;
 attitude.Phi0 = Euler_Angle(1);
 attitude.Theta0 = Euler_Angle(2);
@@ -49,7 +49,8 @@ satellite.Gyro.NominalVoltage = 3.3;          % V
 satellite.Gyro.NominalPower = 0.5;            % W
 satellite.MM.NominalPower = 0.4;              % W
 satellite.MM.NominalVoltage = 3.3;            % W
-
+satellite.Converter.OutputVoltage = 200;      % W
+tether.emittercollector.resistance = 0;
 %% Sensor Specifications
 
 % GPS Specs
@@ -86,16 +87,13 @@ MTQ_Swithces = [1 1 1];
 
 %% Nadir Pointing Specs
 
-%Kp = [10 10 10];
-Kp1 = 10;
-Kp2 = 10;
-Kp3 = 10;
-%Kd = [10 10 10];
-Kd1 = 0;
-Kd2 = 0;
-Kd3 = 0;
+Kp = -5000 * diag(satellite.MOI,0)*0.01;
+Kd = -5000 * diag(satellite.MOI,0)*0.1;
 
 %% Attitude Determination
 NoiseStd = [0.002; 0.01];  % Sun sensor (0.002 rad), Magnetometer (0.01 rad)
 signQuat = 1;              % Positive scalar convention for quaternion
-
+%% tether constants
+tether.I_emitter=0.002;
+tether.tether_length_vector=[0;0;10];
+%% Communication
